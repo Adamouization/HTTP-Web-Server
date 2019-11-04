@@ -1,20 +1,32 @@
 import java.io.*;
 import java.net.Socket;
 
+/**
+ *
+ */
 public class WebClient {
 
+    // Declare and initialise variables.
     private Socket socket;
     private String hostName;
     private int portNumber;
     private BufferedReader bufferedReader;
     private PrintWriter printWriter;
 
+    /**
+     *
+     * @param hostName
+     * @param portNumber
+     */
     public WebClient (String hostName, int portNumber) {
         this.hostName = hostName;
         this.portNumber = portNumber;
         runClient();
     }
 
+    /**
+     *
+     */
     private void runClient() {
         try {
             this.socket = new Socket(this.hostName, this.portNumber);
@@ -33,6 +45,9 @@ public class WebClient {
         }
     }
 
+    /**
+     *
+     */
     private void cleanup() {
         System.out.println("WebClient: cleaning up and exiting." );
         try {

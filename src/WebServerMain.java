@@ -1,7 +1,12 @@
-import java.io.IOException;
-
+/**
+ *
+ */
 public class WebServerMain {
 
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
 
         // Declare and initialise variables.

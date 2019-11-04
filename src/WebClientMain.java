@@ -1,5 +1,12 @@
+/**
+ *
+ */
 public class WebClientMain {
 
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         if (args.length == 1) {
             new WebClient(args[0], 12345);

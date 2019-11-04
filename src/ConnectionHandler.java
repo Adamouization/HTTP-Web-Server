@@ -1,13 +1,21 @@
 import java.io.*;
 import java.net.Socket;
 
+/**
+ *
+ */
 public class ConnectionHandler {
 
+    // Declare variables.
     private Socket socket;
     private InputStream inputStream;
     private OutputStream outputStream;
     private BufferedReader bufferedReader;
 
+    /**
+     *
+     * @param socket
+     */
     public ConnectionHandler(Socket socket) {
         this.socket = socket;
         try {
@@ -21,6 +29,9 @@ public class ConnectionHandler {
         System.out.println("ConnectionHandler successfully instantiated.");
     }
 
+    /**
+     * Handles incoming requests from the client.
+     */
     public void handleClientRequest() {
         System.out.println("Server ConnectionHandler: handling client connection");
         try {
@@ -37,6 +48,9 @@ public class ConnectionHandler {
         }
     }
 
+    /**
+     * Elegantly cleans the up the environment by closing sockets and I/O objects.
+     */
     public void cleanupConnection() {
         System.out.println("Server ConnectionHandler: cleaning up and exiting." );
         try {
