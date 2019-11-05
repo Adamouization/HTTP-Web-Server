@@ -1,3 +1,5 @@
+import exception.DisconnectionException;
+
 import java.io.*;
 import java.net.Socket;
 
@@ -37,10 +39,16 @@ public class ConnectionHandler {
         try {
             while (true) {
                 String line = this.bufferedReader.readLine();
+                if (line.startsWith("HEAD")) {
+                    // todo head
+                }
+                else if (line.startsWith("GET")) {
+                    // todo get
+                }
                 if (line == null || line.equals("null") ) {
                     throw new DisconnectionException("ConnectionHandler: client has closed the connection ...");
                 }
-                System.out.println("ConnectionHandler#handleClientRequest: " + line);
+                System.out.println("ConnectionHandler, message received: " + line);
             }
         }
         catch (Exception e) {
@@ -51,7 +59,7 @@ public class ConnectionHandler {
     /**
      * Elegantly cleans the up the environment by closing sockets and I/O objects.
      */
-    public void cleanupConnection() {
+    private void cleanupConnection() {
         System.out.println("Server ConnectionHandler: cleaning up and exiting." );
         try {
             if (this.bufferedReader != null) {

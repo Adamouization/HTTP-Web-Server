@@ -1,3 +1,5 @@
+package client;
+
 import java.io.*;
 import java.net.Socket;
 
@@ -30,7 +32,7 @@ public class WebClient {
     private void runClient() {
         try {
             this.socket = new Socket(this.hostName, this.portNumber);
-            System.out.println("WebClient: connected to " + this.hostName + " on port " + this.portNumber + ".");
+            System.out.println("client.WebClient: connected to " + this.hostName + " on port " + this.portNumber + ".");
             this.bufferedReader = new BufferedReader(new InputStreamReader(System.in));
             this.printWriter = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
             while (true) {
@@ -40,7 +42,7 @@ public class WebClient {
             }
         }
         catch (Exception e) {
-            System.out.println("WebClient: error while connection to " + this.hostName + " on port " + this.portNumber + ". " + e.getMessage());
+            System.out.println("client.WebClient: error while connection to " + this.hostName + " on port " + this.portNumber + ". " + e.getMessage());
             cleanup();
         }
     }
@@ -49,13 +51,13 @@ public class WebClient {
      *
      */
     private void cleanup() {
-        System.out.println("WebClient: cleaning up and exiting." );
+        System.out.println("client.WebClient: cleaning up and exiting." );
         try {
             if(this.printWriter != null) printWriter.close();
             if(this.bufferedReader != null) bufferedReader.close();
             if(socket != null) socket.close();
         } catch (IOException ioe){
-            System.out.println("WebClient#cleanup: " + ioe.getMessage());
+            System.out.println("client.WebClient#cleanup: " + ioe.getMessage());
         }
     }
 

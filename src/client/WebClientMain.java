@@ -1,3 +1,5 @@
+package client;
+
 /**
  *
  */
@@ -20,7 +22,7 @@ public class WebClientMain {
      * Prints an error message to the command line and terminates the program with an error code.
      */
     public static void clientErrorMessage() {
-        System.out.println("usage: java WebClientMain <hostname> <port>");
+        System.out.println("usage: java client.WebClientMain <hostname> <port>");
         System.exit(1); // System exit with an error code.
     }
 
