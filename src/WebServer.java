@@ -4,10 +4,14 @@ import java.net.Socket;
 
 /**
  *
+ * Class containing the methods to handle new incoming client connections.
+ *
+ * @author 150014151
+ *
  */
 public class WebServer {
 
-    // Declare and initialise variables.
+    // Declare variables.
     private String webDirectoryPath;
     private String fileNotFound;
     private String fileMethodNotImplemented;
@@ -15,9 +19,11 @@ public class WebServer {
     private ServerSocket serverSocket;
 
     /**
+     * Constructor. Parses the path to the directory the server serves documents from and the port number. Calls methods
+     * to initialise the server socket and start listening for incoming clients.
      *
-     * @param webDirectoryPath
-     * @param portNumber
+     * @param webDirectoryPath The root directory from which the server will serve documents.
+     * @param portNumber The port on which the server will listen.
      */
     public WebServer(String webDirectoryPath, int portNumber) {
         this.webDirectoryPath = webDirectoryPath;
@@ -34,9 +40,10 @@ public class WebServer {
     }
 
     /**
+     * Initialises the server socket.
      *
-     * @return
-     * @throws IOException
+     * @return The ServerSocket
+     * @throws IOException If the server isn't properly initialised.
      */
     private ServerSocket startServer() throws IOException {
         ServerSocket ss = new ServerSocket(this.portNumber);
@@ -45,8 +52,10 @@ public class WebServer {
     }
 
     /**
+     * Starts listening for incoming clients connecting. Initialises a new ConnectionHandler instance for each new
+     * client that connects.
      *
-     * @throws IOException
+     * @throws IOException If the server isn't properly initialised.
      */
     private void serverListening() throws IOException {
         while (true) {
