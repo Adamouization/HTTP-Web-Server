@@ -2,14 +2,13 @@ import exception.DisconnectionException;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 /**
- *
  * Class containing the methods to process incoming HTTP requests in parallel by extending the Thread class.
  *
  * @author 150014151
- *
  */
 public class ConnectionHandler extends Thread {
 
@@ -57,61 +56,62 @@ public class ConnectionHandler extends Thread {
 
         System.out.println("Server ConnectionHandler: new thread started to handle connection");
         try {
-            while (true) {
-                // Read incoming line from client.
-                String line = this.bufferedReader.readLine();
-                System.out.println("Incoming message from client: " + line);
+            // Read incoming line from client.
+            String line = this.bufferedReader.readLine();
+            System.out.println("Incoming message from client: " + line);
 
-                // Parse the line into multiple tokens (individual strings).
-                tokenizedLine = new StringTokenizer(line);
-                httpMethod = tokenizedLine.nextToken().toUpperCase(); // Ensure method is all in upper cases.
-                fileRequested = tokenizedLine.nextToken().toLowerCase(); // Ensure file requested is all in lower cases.
+            // Parse the line into multiple tokens (break the main String into multiple strings).
+            tokenizedLine = new StringTokenizer(line);
+            httpMethod = tokenizedLine.nextToken().toUpperCase(); // Ensure method is all in upper cases.
+            fileRequested = tokenizedLine.nextToken().toLowerCase(); // Ensure file requested is all in lower cases.
 
-                // Close the connection when readLine fails (broken connection to client).
-                if (line.equals("null")) {
-                    throw new DisconnectionException("ConnectionHandler: client has closed the connection ...");
-                }
+            // Close the connection when readLine fails (broken connection to client).
+            if (line.equals("null")) {
+                throw new DisconnectionException("ConnectionHandler: client has closed the connection ...");
+            }
 
-                // Check if requested HTTP method is supported by the web server (can only support GET and HEAD).
-                if (!httpMethod.equals("GET") && !httpMethod.equals("HEAD")) {
+            // Check if requested HTTP method is supported by the web server (can only support GET and HEAD).
+            if (!httpMethod.equals("GET") && !httpMethod.equals("HEAD")) {
 
-                    // Prepare the custom html file for 501 errors to be sent back.
-                    File file = new File("www/501.html");
-                    int fileLength = (int) file.length();
+                // Prepare the custom html file for 501 errors to be sent back.
+                File file = new File("www/501.html");
+                int fileLength = (int) file.length();
 
-                    // Send back HTTP header fields to the client.
-                    this.printWriter.println("HTTP/1.1 501 Not Implemented");
-                    this.printWriter.println("Server: Simple Java HTTP Server");
-                    this.printWriter.println("Content-Type: text/html");
-                    this.printWriter.println("Content-Length:" + (int) file.length());
-                    this.printWriter.println();
-                    this.printWriter.flush();
-                    // Send back the HTTP body to the client.
+                // Send back HTTP header fields to the client.
+                this.printWriter.println("HTTP/1.1 501 Not Implemented");
+                this.printWriter.println("Server: Simple Java HTTP Server");
+                this.printWriter.println("Content-Type: text/html");
+                this.printWriter.println("Content-Length:" + (int) file.length());
+                this.printWriter.println();
+                this.printWriter.flush();
+                // Send back the HTTP body to the client.
+                this.bufferedOutputStream.write(fileDataToBytes(file, fileLength), 0, fileLength);
+                this.bufferedOutputStream.flush();
+            }
+
+            // Requested HTTP method is supported by the web server.
+            else {
+                // Prepare HEAD request.
+                File file = new File("www" + fileRequested);
+                int fileLength = (int) file.length();
+
+                // Send back HTTP header fields to the client.
+                this.printWriter.println("HTTP/1.1 200 OK");
+                this.printWriter.println("Server: Simple Java HTTP Server");
+                this.printWriter.println("Content-Type: text/html");
+                this.printWriter.println("Content-Length:" + (int) file.length());
+                this.printWriter.println();
+                this.printWriter.flush();
+
+                // Prepare body of GET request.
+                if (line.startsWith("GET")) {
                     this.bufferedOutputStream.write(fileDataToBytes(file, fileLength), 0, fileLength);
                     this.bufferedOutputStream.flush();
                 }
-
-                // Requested HTTP method is supported by the web server.
-                else {
-                    // Prepare HEAD request.
-                    File file = new File("www" + fileRequested);
-                    int fileLength = (int) file.length();
-
-                    // Send back HTTP header fields to the client.
-                    this.printWriter.println("HTTP/1.1 200 OK");
-                    this.printWriter.println("Server: Simple Java HTTP Server");
-                    this.printWriter.println("Content-Type: text/html");
-                    this.printWriter.println("Content-Length:" + (int) file.length());
-                    this.printWriter.println();
-                    this.printWriter.flush();
-
-                    // Prepare body of GET request.
-                    if (line.startsWith("GET")) {
-                        this.bufferedOutputStream.write(fileDataToBytes(file, fileLength), 0, fileLength);
-                        this.bufferedOutputStream.flush();
-                    }
-                }
             }
+        }
+        catch (NoSuchElementException nsee) {
+            System.out.println("Cannot tokenize empty incoming message from client: " + nsee.getMessage());
         }
         catch (Exception e) {
             System.out.println("ConnectionHandler.run: " + e.getMessage());
@@ -140,7 +140,7 @@ public class ConnectionHandler extends Thread {
      * Elegantly cleans the up the environment by closing sockets and I/O objects.
      */
     private void cleanupConnection() {
-        System.out.println("ConnectionHandler: cleaning up and exiting." );
+        System.out.println("ConnectionHandler: cleaning up and exiting.");
         try {
             if (this.bufferedReader != null) {
                 this.bufferedReader.close();
@@ -154,7 +154,8 @@ public class ConnectionHandler extends Thread {
             if (this.socket != null) {
                 this.socket.close();
             }
-        } catch (IOException ioe){
+        }
+        catch (IOException ioe) {
             System.out.println("ConnectionHandler: error while closing streams and socket : " + ioe.getMessage());
         }
     }
