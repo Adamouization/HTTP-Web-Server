@@ -8,17 +8,21 @@ import java.net.Socket;
 public class WebServer {
 
     // Declare and initialise variables.
-    private String directoryPath;
+    private String webDirectoryPath;
+    private String fileNotFound;
+    private String methodNotImplemented;
     private int portNumber;
     private ServerSocket serverSocket;
 
     /**
      *
-     * @param directoryPath
+     * @param webDirectoryPath
      * @param portNumber
      */
-    public WebServer(String directoryPath, int portNumber) {
-        this.directoryPath = directoryPath;
+    public WebServer(String webDirectoryPath, int portNumber) {
+        this.webDirectoryPath = webDirectoryPath;
+        this.fileNotFound = "../www/404.html";
+        this.methodNotImplemented = "../www/501.html";
         this.portNumber = portNumber;
         try {
             this.serverSocket = startServer();
