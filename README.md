@@ -21,8 +21,8 @@ java WebServerMain <document_root> <port_number>
 `java AlignText <file_name> <line_length> [option]`
 
 where:
-* `document_root` is the path to the Plain Text file to wrap and align.
-* `port_number` is the desired length of the line for wrapping the text.
+* `document_root` is the root directory from which the server will serve documents.
+* `port_number` is the port on which the server will listen.
     
 Example: `java WebServerMain ../www 12345`
 
@@ -34,7 +34,7 @@ Run the tests: `stacscheck Tests/`
     * `curl -s -I -X GET localhost:12345/index.html`
     * `curl -s GET localhost:12345/index.html`
 * Web browser
-    * `open http://127.0.0.1:12345/`
+    * `open http://127.0.0.1:12345/index.html`
 
 ## Javadocs
 
