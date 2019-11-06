@@ -6,7 +6,7 @@ import java.net.Socket;
 /**
  *
  */
-public class ConnectionHandler {
+public class ConnectionHandler extends Thread {
 
     // Declare variables.
     private Socket socket;
@@ -33,10 +33,7 @@ public class ConnectionHandler {
         System.out.println("ConnectionHandler successfully instantiated.");
     }
 
-    /**
-     * Handles incoming requests from the client.
-     */
-    public void handleClientRequest() {
+    public void run() {
         System.out.println("Server ConnectionHandler: handling client connection");
         try {
             while (true) {

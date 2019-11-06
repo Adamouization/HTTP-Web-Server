@@ -49,7 +49,7 @@ public class WebServer {
             Socket connection = this.serverSocket.accept();
             System.out.println("New connection from: " + connection.getInetAddress());
             ConnectionHandler connectionHandler = new ConnectionHandler(connection);
-            connectionHandler.handleClientRequest();
+            connectionHandler.start(); // Start threaded connection handler.
         }
     }
 
