@@ -13,6 +13,7 @@ public class ConnectionHandler {
     private InputStream inputStream;
     private OutputStream outputStream;
     private BufferedReader bufferedReader;
+    private PrintWriter printWriter;
 
     /**
      *
@@ -24,6 +25,7 @@ public class ConnectionHandler {
             this.inputStream = this.socket.getInputStream();
             this.outputStream = this.socket.getOutputStream();
             this.bufferedReader = new BufferedReader(new InputStreamReader(this.inputStream));
+            this.printWriter = new PrintWriter(this.outputStream);
         }
         catch (IOException ioe) {
             System.out.println("Server ConnectionHandler#ConnectionHandler: " + ioe.getMessage());
@@ -39,15 +41,26 @@ public class ConnectionHandler {
         try {
             while (true) {
                 String line = this.bufferedReader.readLine();
-                if (line.startsWith("HEAD")) {
-                    // todo head
-                }
-                else if (line.startsWith("GET")) {
-                    // todo get
-                }
-                if (line == null || line.equals("null") ) {
+                // Close the connection when readLine fails (broken connection to client).
+                if (line == null || line.equals("null")) {
                     throw new DisconnectionException("ConnectionHandler: client has closed the connection ...");
                 }
+                // Handle a HEAD request.
+                if (line.startsWith("HEAD")) {
+                    this.printWriter.println("HTTP/1.1 200 OK");
+                    this.printWriter.flush();
+                }
+                // Handle a GET request.
+                else if (line.startsWith("GET")) {
+                    this.printWriter.println("HTTP/1.1 200 OK");
+                    this.printWriter.flush();
+                }
+                // Request type not implemented
+                else {
+                    this.printWriter.println("HTTP/1.1 503 Not Implemented");
+                    this.printWriter.flush();
+                }
+
                 System.out.println("ConnectionHandler, message received: " + line);
             }
         }
