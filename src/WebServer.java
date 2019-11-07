@@ -13,8 +13,6 @@ public class WebServer {
 
     // Declare variables.
     private String webDirectoryPath;
-    private String fileNotFound;
-    private String fileMethodNotImplemented;
     private int portNumber;
     private ServerSocket serverSocket;
 
@@ -27,8 +25,6 @@ public class WebServer {
      */
     public WebServer(String webDirectoryPath, int portNumber) {
         this.webDirectoryPath = webDirectoryPath;
-        this.fileNotFound = "../www/404.html";
-        this.fileMethodNotImplemented = "../www/501.html";
         this.portNumber = portNumber;
         try {
             this.serverSocket = startServer();
@@ -61,7 +57,7 @@ public class WebServer {
         while (true) {
             Socket connection = this.serverSocket.accept();
             System.out.println("\nNew connection from: " + connection.getInetAddress());
-            ConnectionHandler connectionHandler = new ConnectionHandler(connection);
+            ConnectionHandler connectionHandler = new ConnectionHandler(connection, this.webDirectoryPath);
             connectionHandler.start(); // Start threaded connection handler.
         }
     }

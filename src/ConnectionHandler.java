@@ -2,18 +2,20 @@ import exception.DisconnectionException;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.file.NoSuchFileException;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 /**
+ *
  * Class containing the methods to process incoming HTTP requests in parallel by extending the Thread class.
  *
  * @author 150014151
+ *
  */
 public class ConnectionHandler extends Thread {
 
     // Declare variables.
+    private String webRoot;
     private Socket socket;
     private BufferedReader bufferedReader;
     private PrintWriter printWriter;
@@ -25,7 +27,8 @@ public class ConnectionHandler extends Thread {
      *
      * @param socket The client connection.
      */
-    public ConnectionHandler(Socket socket) {
+    public ConnectionHandler(Socket socket, String webRoot) {
+        this.webRoot = webRoot;
         this.socket = socket;
         try {
             InputStream inputStream = this.socket.getInputStream();
@@ -59,24 +62,25 @@ public class ConnectionHandler extends Thread {
         try {
             // Read incoming line from client.
             String line = this.bufferedReader.readLine();
-            System.out.println("Incoming message from client: " + line);
-
-            // Parse the line into multiple tokens (break the main String into multiple strings).
-            tokenizedLine = new StringTokenizer(line);
-            httpMethod = tokenizedLine.nextToken().toUpperCase(); // Ensure method is all in upper cases.
-            fileRequested = tokenizedLine.nextToken().toLowerCase(); // Ensure file requested is all in lower cases.
-            System.out.println("ConnectionHandler: file " + fileRequested + " requested");
 
             // Close the connection when readLine fails (broken connection to client).
             if (line.equals("null")) {
                 throw new DisconnectionException("ConnectionHandler: client has closed the connection ...");
             }
 
+            // Parse the line into multiple tokens (break the main String into multiple strings).
+            System.out.println("Incoming message from client: " + line);
+            tokenizedLine = new StringTokenizer(line);
+            httpMethod = tokenizedLine.nextToken().toUpperCase(); // Ensure method is all in upper cases.
+            fileRequested = tokenizedLine.nextToken().toLowerCase(); // Ensure file requested is all in lower cases.
+            System.out.println("ConnectionHandler: file " + fileRequested + " requested");
+
             // Check if requested HTTP method is supported by the web server (can only support GET and HEAD).
             if (!httpMethod.equals("GET") && !httpMethod.equals("HEAD") && !fileRequested.contains(".ico")) {
 
+                System.out.println("ConnectionHandler: Request method '" + httpMethod + "' not implemented.");
                 // Prepare the custom html file for 501 errors to be sent back.
-                File file = new File("www/501.html");
+                File file = new File(this.webRoot + "/" + WebUtil.fileMethodNotImplemented);
                 int fileLength = (int) file.length();
 
                 // Send back HTTP header fields to the client.
@@ -87,14 +91,14 @@ public class ConnectionHandler extends Thread {
                 this.printWriter.println();
                 this.printWriter.flush();
                 // Send back the HTTP body to the client.
-                this.bufferedOutputStream.write(fileDataToBytes(file, fileLength), 0, fileLength);
+                this.bufferedOutputStream.write(WebUtil.fileDataToBytes(file, fileLength), 0, fileLength);
                 this.bufferedOutputStream.flush();
             }
 
             // Requested HTTP method is supported by the web server.
             else {
                 // Prepare HEAD request.
-                File file = new File("www" + fileRequested);
+                File file = new File(this.webRoot + fileRequested);
                 int fileLength = (int) file.length();
 
                 // Send back HTTP header fields to the client.
@@ -107,14 +111,14 @@ public class ConnectionHandler extends Thread {
 
                 // Prepare body of GET request.
                 if (line.startsWith("GET")) {
-                    this.bufferedOutputStream.write(fileDataToBytes(file, fileLength), 0, fileLength);
+                    this.bufferedOutputStream.write(WebUtil.fileDataToBytes(file, fileLength), 0, fileLength);
                     this.bufferedOutputStream.flush();
                 }
             }
         }
         catch (FileNotFoundException fnfe) {
             try {
-                File file = new File("www/404.html");
+                File file = new File(this.webRoot + "/" + WebUtil.fileNotFound);
                 int fileLength = (int) file.length();
 
                 // Send back HTTP header fields to the client.
@@ -126,7 +130,7 @@ public class ConnectionHandler extends Thread {
                 this.printWriter.flush();
 
                 // Prepare body of 404 Error.
-                this.bufferedOutputStream.write(fileDataToBytes(file, fileLength), 0, fileLength);
+                this.bufferedOutputStream.write(WebUtil.fileDataToBytes(file, fileLength), 0, fileLength);
                 this.bufferedOutputStream.flush();
             } catch (IOException ioe) {
                 System.err.println("ConnectionHandler: file 404.html not found\nError: " + ioe.getMessage());
@@ -142,20 +146,6 @@ public class ConnectionHandler extends Thread {
         finally {
             cleanupConnection();
         }
-    }
-
-    private byte[] fileDataToBytes(File file, int fileLength) throws IOException {
-        // Declare and initialise local variables.
-        FileInputStream fileInputStream = null; // Initialise FileInputStream instance to read file.
-        byte[] fileData = new byte[fileLength]; // Initialise array of bytes holding file contents.
-        try {
-            fileInputStream = new FileInputStream(file);
-            fileInputStream.read(fileData);
-        } finally {
-            if (fileInputStream != null)
-                fileInputStream.close();
-        }
-        return fileData;
     }
 
     /**
