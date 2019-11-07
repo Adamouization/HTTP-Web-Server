@@ -30,7 +30,7 @@ public class HttpResponse {
      * @param responseCode The HTTP response code used to build an appropriate response header.
      * @param httpMethod The HTTP request made by the client.
      * @param fileRequested The file requested in the HTTP request made by the client.
-     * @param contentType
+     * @param contentType The type of the content being sent back to the client.
      * @param webRoot The root directory from which the server will serve documents.
      */
     public HttpResponse(PrintWriter pw, BufferedOutputStream bos, int responseCode, String httpMethod,
@@ -41,6 +41,7 @@ public class HttpResponse {
             // Prepare the requested file to send back.
             File file = new File(webRoot + "/" + fileRequested);
             int fileLength = (int) file.length();
+
             // Send HTTP response (headers then content) back to client.
             switch (responseCode) {
                 case 200:
@@ -70,9 +71,14 @@ public class HttpResponse {
                     sendHttpResponseContent(file);
                     break;
             }
+
+            // Log the information of the client's HTTP request.
+            WebLogger webLogger = new WebLogger("http_requests_history.log");
+            webLogger.logRequest(httpMethod, responseCode, fileRequested);
+            webLogger.saveLogFile();
         }
         catch (IOException ioe) {
-            System.err.println("ConnectionHandler: file 404.html not found\nError: " + ioe.getMessage());
+            System.err.println("ConnectionHandler: file '" + fileRequested + "' not found\nError: " + ioe.getMessage());
         }
     }
 
