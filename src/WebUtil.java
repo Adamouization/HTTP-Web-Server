@@ -28,12 +28,12 @@ public class WebUtil {
     public static byte[] fileDataToBytes(File file, int fileLength) throws IOException {
         // Declare and initialise local variables.
         FileInputStream fileInputStream = null; // Initialise FileInputStream instance to read file.
-        byte[] fileData = new byte[fileLength]; // Initialise array of bytes holding file contents.
+        byte[] fileDataBytes = new byte[fileLength]; // Initialise array of bytes holding file contents.
 
         // Converts the content into bytes.
         try {
             fileInputStream = new FileInputStream(file);
-            fileInputStream.read(fileData);
+            fileInputStream.read(fileDataBytes);
         }
 
         // Close the FileInputStream.
@@ -43,7 +43,7 @@ public class WebUtil {
             }
         }
 
-        return fileData;
+        return fileDataBytes;
     }
 
 }

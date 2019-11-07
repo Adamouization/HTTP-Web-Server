@@ -1,6 +1,5 @@
 import exception.DisconnectionException;
 
-
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -55,17 +54,18 @@ public class ConnectionHandler extends Thread {
     /**
      * The main HTTP connection handler. Parses the incoming lines from the client before deciding what to send back to
      * the client. Supports the following HTTP requests: HEAD and GET requests.
-     * Returns the following based on the request:
+     * Sends the following back to the client based on the request:
      *      - The desired header (200) for a HEAD request,
      *      - The desired header (200) and content (the html page) for a GET request,
-     *      - An error header (404) with a custom html page (404.html) when the requested file is not found,
-     *      - An error header (501) with a custom html page (501.html) when the requested method isn't implemented.
-     * This method invoked when the thread's start method is called.
+     *      - An error header (404) with a custom html page (errors/404.html) when the requested file is not found,
+     *      - An error header (501) with a custom html page (errors/501.html) when the requested method isn't implemented.
+     * This method is invoked when the thread's start method is called.
      */
     public void run() {
         // Declare local variable.
         String httpMethod, fileRequested;
         StringTokenizer tokenizedLine;
+        File file;
 
         System.out.println("ConnectionHandler: New thread started to handle connection");
         try {
@@ -91,47 +91,21 @@ public class ConnectionHandler extends Thread {
             }
             System.out.println("ConnectionHandler: file " + fileRequested + " requested");
 
-            // Check if requested HTTP method is supported by the web server (can only support GET and HEAD).
+            // Return a 501 error if requested HTTP method is not supported by the server (GET and HEAD only).
             if (!httpMethod.equals("GET") && !httpMethod.equals("HEAD") && !fileRequested.contains(".ico")) {
-
                 System.out.println("ConnectionHandler: Request method '" + httpMethod + "' not implemented.");
-                // Prepare the custom html file for 501 errors to be sent back.
-                File file = new File(this.webRoot + "/" + WebUtil.FILE_METHOD_NOT_IMPLEMENTED);
-
-                // Send back HTTP header fields to the client.
-                sendHttpResponseHeader("501 Not Implemented", (int) file.length());
-
-                // Send back the HTTP body to the client.
-                sendHttpResponseContent(file);
+                new HttpResponse(this.printWriter, this.bufferedOutputStream, 501, httpMethod, WebUtil.FILE_METHOD_NOT_IMPLEMENTED, this.webRoot);
             }
-
             // Requested HTTP method is supported by the web server.
             else {
-                // Prepare HEAD request.
-                File file = new File(this.webRoot + fileRequested);
-
+                file = new File(this.webRoot + fileRequested);
+                // Return a 404 error because requested file does not exist.
                 if (!file.exists()) {
-                    try {
-                        file = new File(this.webRoot + "/" + WebUtil.FILE_NOT_FOUND);
-                        int fileLength = (int) file.length();
-
-                        // Send back HTTP header fields to the client.
-                        sendHttpResponseHeader("404 Not Found", (int) file.length());
-
-                        // Send back content of 404 Error.
-                        sendHttpResponseContent(file);
-                    } catch (IOException ioe) {
-                        System.err.println("ConnectionHandler: file 404.html not found\nError: " + ioe.getMessage());
-                    }
+                    new HttpResponse(this.printWriter, this.bufferedOutputStream,404, httpMethod, WebUtil.FILE_NOT_FOUND, this.webRoot);
                 }
+                // Return the requested file.
                 else {
-                    // Send back HTTP header fields to the client.
-                    sendHttpResponseHeader("200 OK", (int) file.length());
-
-                    // Prepare content of GET request.
-                    if (line.startsWith("GET")) {
-                        sendHttpResponseContent(file);
-                    }
+                    new HttpResponse(this.printWriter, this.bufferedOutputStream,200, httpMethod, fileRequested, this.webRoot);
                 }
             }
         }
@@ -145,33 +119,6 @@ public class ConnectionHandler extends Thread {
         finally {
             cleanupConnection();
         }
-    }
-
-    /**
-     * Prepares the header of the HTTP response and sends it back to the client.
-     *
-     * @param statusLine The status line of the header.
-     * @param fileLength The length of the response's content being sent back to the client.
-     */
-    private void sendHttpResponseHeader(String statusLine, int fileLength) {
-        this.printWriter.println("HTTP/1.1 " + statusLine);
-        this.printWriter.println("Server: Simple Java HTTP Server");
-        this.printWriter.println("Content-Type: text/html");
-        this.printWriter.println("Content-Length: " + fileLength);
-        this.printWriter.println();
-        this.printWriter.flush();
-    }
-
-    /**
-     * Prepares the content of the HTTP response and sends it back to the client.
-     *
-     * @param file The file whose content is being sent back to the client in the body of the HTTP response.
-     * @throws IOException When the file whose content are to sent cannot be found.
-     */
-    private void sendHttpResponseContent(File file) throws IOException {
-        int fileLength = (int) file.length();
-        this.bufferedOutputStream.write(WebUtil.fileDataToBytes(file, fileLength), 0, fileLength);
-        this.bufferedOutputStream.flush();
     }
 
     /**
