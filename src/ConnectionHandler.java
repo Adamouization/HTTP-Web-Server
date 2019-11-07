@@ -99,41 +99,44 @@ public class ConnectionHandler extends Thread {
             else {
                 // Prepare HEAD request.
                 File file = new File(this.webRoot + fileRequested);
-                int fileLength = (int) file.length();
 
-                // Send back HTTP header fields to the client.
-                this.printWriter.println("HTTP/1.1 200 OK");
-                this.printWriter.println("Server: Simple Java HTTP Server");
-                this.printWriter.println("Content-Type: text/html");
-                this.printWriter.println("Content-Length:" + fileLength);
-                this.printWriter.println();
-                this.printWriter.flush();
+                if (!file.exists()) {
+                    try {
+                        file = new File(this.webRoot + "/" + WebUtil.fileNotFound);
+                        int fileLength = (int) file.length();
 
-                // Prepare body of GET request.
-                if (line.startsWith("GET")) {
-                    this.bufferedOutputStream.write(WebUtil.fileDataToBytes(file, fileLength), 0, fileLength);
-                    this.bufferedOutputStream.flush();
+                        // Send back HTTP header fields to the client.
+                        this.printWriter.println("HTTP/1.1 404 File Not Found");
+                        this.printWriter.println("Server: Simple Java HTTP Server");
+                        this.printWriter.println("Content-Type: text/html");
+                        this.printWriter.println("Content-Length:" + fileLength);
+                        this.printWriter.println();
+                        this.printWriter.flush();
+
+                        // Prepare body of 404 Error.
+                        this.bufferedOutputStream.write(WebUtil.fileDataToBytes(file, fileLength), 0, fileLength);
+                        this.bufferedOutputStream.flush();
+                    } catch (IOException ioe) {
+                        System.err.println("ConnectionHandler: file 404.html not found\nError: " + ioe.getMessage());
+                    }
                 }
-            }
-        }
-        catch (FileNotFoundException fnfe) {
-            try {
-                File file = new File(this.webRoot + "/" + WebUtil.fileNotFound);
-                int fileLength = (int) file.length();
+                else {
+                    int fileLength = (int) file.length();
 
-                // Send back HTTP header fields to the client.
-                this.printWriter.println("HTTP/1.1 404 File Not Found");
-                this.printWriter.println("Server: Simple Java HTTP Server");
-                this.printWriter.println("Content-Type: text/htmll");
-                this.printWriter.println("Content-Length:" + fileLength);
-                this.printWriter.println();
-                this.printWriter.flush();
+                    // Send back HTTP header fields to the client.
+                    this.printWriter.println("HTTP/1.1 200 OK");
+                    this.printWriter.println("Server: Simple Java HTTP Server");
+                    this.printWriter.println("Content-Type: text/html");
+                    this.printWriter.println("Content-Length:" + fileLength);
+                    this.printWriter.println();
+                    this.printWriter.flush();
 
-                // Prepare body of 404 Error.
-                this.bufferedOutputStream.write(WebUtil.fileDataToBytes(file, fileLength), 0, fileLength);
-                this.bufferedOutputStream.flush();
-            } catch (IOException ioe) {
-                System.err.println("ConnectionHandler: file 404.html not found\nError: " + ioe.getMessage());
+                    // Prepare body of GET request.
+                    if (line.startsWith("GET")) {
+                        this.bufferedOutputStream.write(WebUtil.fileDataToBytes(file, fileLength), 0, fileLength);
+                        this.bufferedOutputStream.flush();
+                    }
+                }
             }
         }
         catch (NoSuchElementException nsee) {
