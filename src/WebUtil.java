@@ -11,14 +11,11 @@ import java.io.IOException;
  */
 public class WebUtil {
 
-    /* <cr><lf> (Carriage Return Line Feed). */
-    public static final String CRLF = "'\r\n'";
-    /* Default html page. */
-    public static final String DEFAULT_FILE = "index.html";
-    /* Page for 404 Errors. */
-    public static final String FILE_NOT_FOUND = "errors/404.html";
-    /* Page for 501 Errors. */
-    public static final String FILE_METHOD_NOT_IMPLEMENTED = "errors/501.html";
+    // Declare and initialise final variables.
+    public static final String CRLF = "'\r\n'"; // <cr><lf> (Carriage Return Line Feed).
+    public static final String DEFAULT_FILE = "index.html"; // Default html page.
+    public static final String FILE_NOT_FOUND = "errors/404.html"; // Page for 404 Errors.
+    public static final String FILE_METHOD_NOT_IMPLEMENTED = "errors/501.html"; // Page for 501 Errors.
 
     /**
      * Converts a file's content to an array of bytes in order to send it over a BufferedOutputStream.
