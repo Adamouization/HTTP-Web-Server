@@ -2,6 +2,7 @@ import exception.DisconnectionException;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.file.NoSuchFileException;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
@@ -54,7 +55,7 @@ public class ConnectionHandler extends Thread {
         String httpMethod, fileRequested;
         StringTokenizer tokenizedLine;
 
-        System.out.println("Server ConnectionHandler: new thread started to handle connection");
+        System.out.println("ConnectionHandler: New thread started to handle connection");
         try {
             // Read incoming line from client.
             String line = this.bufferedReader.readLine();
@@ -64,6 +65,7 @@ public class ConnectionHandler extends Thread {
             tokenizedLine = new StringTokenizer(line);
             httpMethod = tokenizedLine.nextToken().toUpperCase(); // Ensure method is all in upper cases.
             fileRequested = tokenizedLine.nextToken().toLowerCase(); // Ensure file requested is all in lower cases.
+            System.out.println("ConnectionHandler: file " + fileRequested + " requested");
 
             // Close the connection when readLine fails (broken connection to client).
             if (line.equals("null")) {
@@ -71,7 +73,7 @@ public class ConnectionHandler extends Thread {
             }
 
             // Check if requested HTTP method is supported by the web server (can only support GET and HEAD).
-            if (!httpMethod.equals("GET") && !httpMethod.equals("HEAD")) {
+            if (!httpMethod.equals("GET") && !httpMethod.equals("HEAD") && !fileRequested.contains(".ico")) {
 
                 // Prepare the custom html file for 501 errors to be sent back.
                 File file = new File("www/501.html");
@@ -81,7 +83,7 @@ public class ConnectionHandler extends Thread {
                 this.printWriter.println("HTTP/1.1 501 Not Implemented");
                 this.printWriter.println("Server: Simple Java HTTP Server");
                 this.printWriter.println("Content-Type: text/html");
-                this.printWriter.println("Content-Length:" + (int) file.length());
+                this.printWriter.println("Content-Length:" + fileLength);
                 this.printWriter.println();
                 this.printWriter.flush();
                 // Send back the HTTP body to the client.
@@ -99,7 +101,7 @@ public class ConnectionHandler extends Thread {
                 this.printWriter.println("HTTP/1.1 200 OK");
                 this.printWriter.println("Server: Simple Java HTTP Server");
                 this.printWriter.println("Content-Type: text/html");
-                this.printWriter.println("Content-Length:" + (int) file.length());
+                this.printWriter.println("Content-Length:" + fileLength);
                 this.printWriter.println();
                 this.printWriter.flush();
 
@@ -108,6 +110,26 @@ public class ConnectionHandler extends Thread {
                     this.bufferedOutputStream.write(fileDataToBytes(file, fileLength), 0, fileLength);
                     this.bufferedOutputStream.flush();
                 }
+            }
+        }
+        catch (FileNotFoundException fnfe) {
+            try {
+                File file = new File("www/404.html");
+                int fileLength = (int) file.length();
+
+                // Send back HTTP header fields to the client.
+                this.printWriter.println("HTTP/1.1 404 File Not Found");
+                this.printWriter.println("Server: Simple Java HTTP Server");
+                this.printWriter.println("Content-Type: text/htmll");
+                this.printWriter.println("Content-Length:" + fileLength);
+                this.printWriter.println();
+                this.printWriter.flush();
+
+                // Prepare body of 404 Error.
+                this.bufferedOutputStream.write(fileDataToBytes(file, fileLength), 0, fileLength);
+                this.bufferedOutputStream.flush();
+            } catch (IOException ioe) {
+                System.err.println("ConnectionHandler: file 404.html not found\nError: " + ioe.getMessage());
             }
         }
         catch (NoSuchElementException nsee) {
@@ -140,7 +162,7 @@ public class ConnectionHandler extends Thread {
      * Elegantly cleans the up the environment by closing sockets and I/O objects.
      */
     private void cleanupConnection() {
-        System.out.println("ConnectionHandler: cleaning up and exiting.");
+        System.out.println("ConnectionHandler: cleaning up and exiting");
         try {
             if (this.bufferedReader != null) {
                 this.bufferedReader.close();
