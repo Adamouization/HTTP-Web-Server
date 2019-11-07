@@ -35,16 +35,18 @@ public class WebServerMain {
             catch (NumberFormatException e) {
                 serverErrorMessage();
             }
-            // Parse maximum number of threads.
-            try {
-                maxNumberOfThreads = Integer.parseInt(args[2]);
-                // Invalid port number (must be a positive integer smaller than a )
-                if (maxNumberOfThreads < 0) {
+            // Parse maximum number of threads (optional argument).
+            if (args.length == 3) {
+                try {
+                    maxNumberOfThreads = Integer.parseInt(args[2]);
+                    // Invalid port number (must be a positive integer smaller than a )
+                    if (maxNumberOfThreads < 0) {
+                        serverErrorMessage();
+                    }
+                }
+                catch (NumberFormatException e) {
                     serverErrorMessage();
                 }
-            }
-            catch (NumberFormatException e) {
-                serverErrorMessage();
             }
         }
         // Incorrect number of arguments.
