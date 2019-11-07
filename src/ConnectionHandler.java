@@ -64,15 +64,22 @@ public class ConnectionHandler extends Thread {
             String line = this.bufferedReader.readLine();
 
             // Close the connection when readLine fails (broken connection to client).
-            if (line.equals("null")) {
-                throw new DisconnectionException("ConnectionHandler: client has closed the connection ...");
+            if (line == null || line.isEmpty()) {
+                throw new DisconnectionException("Client has closed the connection ...");
             }
 
             // Parse the line into multiple tokens (break the main String into multiple strings).
             System.out.println("Incoming message from client: " + line);
             tokenizedLine = new StringTokenizer(line);
+
+            // Extract requested HTTP method and requested file from client.
             httpMethod = tokenizedLine.nextToken().toUpperCase(); // Ensure method is all in upper cases.
             fileRequested = tokenizedLine.nextToken().toLowerCase(); // Ensure file requested is all in lower cases.
+
+            // Point default route towards index.html.
+            if (fileRequested.endsWith("/")) {
+                fileRequested += WebUtil.defaultFile;
+            }
             System.out.println("ConnectionHandler: file " + fileRequested + " requested");
 
             // Check if requested HTTP method is supported by the web server (can only support GET and HEAD).

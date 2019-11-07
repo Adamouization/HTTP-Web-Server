@@ -12,6 +12,7 @@ import java.io.IOException;
 public class WebUtil {
 
     // Declare and initialise variables.
+    public static final String defaultFile = "index.html";
     public static final String fileNotFound = "404.html";
     public static final String fileMethodNotImplemented = "501.html";
 
