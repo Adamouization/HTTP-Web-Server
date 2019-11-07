@@ -3,15 +3,38 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ *
+ * Class creating the various HTTP response to send back to the client, preparing the header and content for "200 OK",
+ * "404 Error Not Found" and "501 Error Not Implemented" HTTP responses.
+ *
+ * @author 150014151
+ *
+ */
 public class HttpResponse {
 
+    // Declare variables.
     private PrintWriter printWriter;
     private BufferedOutputStream bufferedOutputStream;
 
+    /**
+     * Constructor. Sends the following HTTP responses back to the client based on the request made:
+     *              - A 200 OK header for a HEAD request,
+     *              - A 200 OK header and the desired file's content for a GET request,
+     *              - A 404 Error header with a custom html page (errors/404.html) when the requested file is not
+     *              found,
+     *              - A 501 Not Implemented header with a custom html page (errors/501.html) when the requested method
+     *              isn't implemented.
+     * @param pw The PrintWriter object used to send the HTTP response header to the client.
+     * @param bos The BufferedOutputStream used to send the HTTP response content to the client.
+     * @param responseCode The HTTP response code used to build an appropriate response header.
+     * @param httpMethod The HTTP request made by the client.
+     * @param fileRequested The file requested in the HTTP request made by the client.
+     * @param webRoot The root directory from which the server will serve documents.
+     */
     public HttpResponse(PrintWriter pw, BufferedOutputStream bos, int responseCode, String httpMethod, String fileRequested, String webRoot) {
         this.printWriter = pw;
         this.bufferedOutputStream = bos;
-
         try {
             // Prepare the requested file to send back.
             File file = new File(webRoot + "/" + fileRequested);
