@@ -31,10 +31,13 @@ Run the tests: `stacscheck Tests/`
 ### Client
 
 * Terminal
-    * `curl -s -I -X GET localhost:12345/index.html`
-    * `curl -s GET localhost:12345/index.html`
+    * GET request method
+        * content: `curl -s -X GET localhost:12345/index.html`
+        * headers: `curl -s -I -X GET localhost:12345/index.html`
+    * 404 Error: `curl -s -X GET localhost:12345/test.html` (File not found)
+    * 501 Error: `curl -X POST localhost:12345/index.html` (POST not implemented)
 * Web browser
-    * `open http://127.0.0.1:12345/index.html`
+    * `open http://127.0.0.1:12345/`
 
 ## Javadocs
 
