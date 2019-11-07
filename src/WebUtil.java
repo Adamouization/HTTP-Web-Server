@@ -18,7 +18,8 @@ public class WebUtil {
     public static final String FILE_METHOD_NOT_IMPLEMENTED = "errors/501.html"; // Page for 501 Errors.
 
     /**
-     * Converts a file's content to an array of bytes in order to send it over a BufferedOutputStream.
+     * Converts a file's content to an array of bytes in order to send it over a BufferedOutputStream. Works with any
+     * file type, including text files like HTML and binary image files like JPG, JPEG, PNG and GIF.
      *
      * @param file The file to convert to an array of bytes.
      * @param fileLength The length of the file.

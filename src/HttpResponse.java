@@ -30,31 +30,43 @@ public class HttpResponse {
      * @param responseCode The HTTP response code used to build an appropriate response header.
      * @param httpMethod The HTTP request made by the client.
      * @param fileRequested The file requested in the HTTP request made by the client.
+     * @param contentType
      * @param webRoot The root directory from which the server will serve documents.
      */
-    public HttpResponse(PrintWriter pw, BufferedOutputStream bos, int responseCode, String httpMethod, String fileRequested, String webRoot) {
+    public HttpResponse(PrintWriter pw, BufferedOutputStream bos, int responseCode, String httpMethod,
+                        String fileRequested, String contentType, String webRoot) {
         this.printWriter = pw;
         this.bufferedOutputStream = bos;
         try {
             // Prepare the requested file to send back.
             File file = new File(webRoot + "/" + fileRequested);
             int fileLength = (int) file.length();
-            // Send back data.
+            // Send HTTP response (headers then content) back to client.
             switch (responseCode) {
                 case 200:
-                    // Send back HTTP response header to the client.
-                    sendHttpResponseHeader("200 OK", fileLength);
-                    // Send back the HTTP response content to the client.
-                    if (httpMethod.equals("GET")) {
+                    sendHttpResponseHeader(
+                            "200 OK",
+                            contentType,
+                            fileLength
+                    );
+                    if (httpMethod.equals("GET")) { // Only send if GET request, not HEAD.
                         sendHttpResponseContent(file);
                     }
                     break;
                 case 404:
-                    sendHttpResponseHeader("404 Not Found", fileLength);
+                    sendHttpResponseHeader(
+                            "404 Not Found",
+                            "text/html", // Always html.
+                            fileLength
+                    );
                     sendHttpResponseContent(file);
                     break;
                 case 501:
-                    sendHttpResponseHeader("501 Not Implemented", fileLength);
+                    sendHttpResponseHeader(
+                            "501 Not Implemented",
+                            "text/html", // Always html.
+                            fileLength
+                    );
                     sendHttpResponseContent(file);
                     break;
             }
@@ -70,10 +82,10 @@ public class HttpResponse {
      * @param statusLine The status line of the header.
      * @param fileLength The length of the response's content being sent back to the client.
      */
-    private void sendHttpResponseHeader(String statusLine, int fileLength) {
+    private void sendHttpResponseHeader(String statusLine, String contentType, int fileLength) {
         this.printWriter.println("HTTP/1.1 " + statusLine);
         this.printWriter.println("Server: Simple Java HTTP Server");
-        this.printWriter.println("Content-Type: text/html");
+        this.printWriter.println("Content-Type: " + contentType);
         this.printWriter.println("Content-Length: " + fileLength);
         this.printWriter.println();
         this.printWriter.flush();

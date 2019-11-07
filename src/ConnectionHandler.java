@@ -48,7 +48,6 @@ public class ConnectionHandler extends Thread {
         catch (IOException ioe) {
             System.out.println("Server ConnectionHandler#ConnectionHandler: " + ioe.getMessage());
         }
-        System.out.println("ConnectionHandler successfully instantiated.");
     }
 
     /**
@@ -62,7 +61,7 @@ public class ConnectionHandler extends Thread {
      */
     public void run() {
         // Declare local variable.
-        String httpMethod, fileRequested;
+        String httpMethod, fileRequested, contentType;
         StringTokenizer tokenizedLine;
         File file;
 
@@ -79,9 +78,10 @@ public class ConnectionHandler extends Thread {
             tokenizedLine = new StringTokenizer(line);
             httpMethod = tokenizedLine.nextToken().toUpperCase(); // Ensure method is all in upper cases.
             fileRequested = parseFileRequested(tokenizedLine.nextToken());
+            contentType = getContentType(fileRequested);
 
             // Check if requested HTTP method is not supported by the server (GET and HEAD requests supported only).
-            if (!httpMethod.equals("GET") && !httpMethod.equals("HEAD") && !fileRequested.contains(".ico")) {
+            if (isHttpMethodNotSupportedByServer(fileRequested) && !fileRequested.contains(".ico")) {
                 // Return a 501 Error Not Implemented response (not GET or HEAD).
                 System.out.println("ConnectionHandler: Request method '" + httpMethod + "' not implemented.");
                 new HttpResponse(
@@ -90,6 +90,7 @@ public class ConnectionHandler extends Thread {
                         501,
                         httpMethod,
                         WebUtil.FILE_METHOD_NOT_IMPLEMENTED,
+                        contentType,
                         this.webRoot
                 );
             }
@@ -104,6 +105,7 @@ public class ConnectionHandler extends Thread {
                             404,
                             httpMethod,
                             WebUtil.FILE_NOT_FOUND,
+                            contentType,
                             this.webRoot
                     );
                 }
@@ -115,6 +117,7 @@ public class ConnectionHandler extends Thread {
                             200,
                             httpMethod,
                             fileRequested,
+                            contentType,
                             this.webRoot
                     );
                 }
@@ -145,6 +148,16 @@ public class ConnectionHandler extends Thread {
     }
 
     /**
+     * Checks if the HTTP method requested by the client is supported by the server or not.
+     *
+     * @param httpMethod The HTTP request made by the client.
+     * @return True if it is not supported, False if it is supported.
+     */
+    private boolean isHttpMethodNotSupportedByServer(String httpMethod) {
+        return httpMethod.equals("GET") || httpMethod.equals("HEAD");
+    }
+
+    /**
      * Parses the requested file String by ensuring it is composed of lower case characters only and that if there is no
      * requested file (only '/' is requested), then the default file "index.html" is returned as a response instead.
      *
@@ -162,6 +175,33 @@ public class ConnectionHandler extends Thread {
 
         System.out.println("ConnectionHandler: file " + fileRequested + " requested");
         return fileRequested;
+    }
+
+    /**
+     * Determines the content-type of the requested filed used in the HTTP response header. Supports HTMl, JPG, JPEG,
+     * PNG and GIF files. Defaults to plain text files.
+     *
+     * @param fileRequested The file requested by the client.
+     * @return The content-type of the requested file.
+     */
+    private String getContentType(String fileRequested) {
+        if (fileRequested.endsWith(".html"))
+            return "text/html";
+        else if (fileRequested.endsWith(".jpg")) {
+            return "image/jpg";
+        }
+        else if (fileRequested.endsWith(".jpeg")) {
+            return "image/jpeg";
+        }
+        else if (fileRequested.endsWith(".png")) {
+            return "image/png";
+        }
+        else if (fileRequested.endsWith(".gif")) {
+            return "image/gif";
+        }
+        else {
+            return "text/plain";
+        }
     }
 
     /**
