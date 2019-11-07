@@ -97,18 +97,12 @@ public class ConnectionHandler extends Thread {
                 System.out.println("ConnectionHandler: Request method '" + httpMethod + "' not implemented.");
                 // Prepare the custom html file for 501 errors to be sent back.
                 File file = new File(this.webRoot + "/" + WebUtil.FILE_METHOD_NOT_IMPLEMENTED);
-                int fileLength = (int) file.length();
 
                 // Send back HTTP header fields to the client.
-                this.printWriter.println("HTTP/1.1 501 Not Implemented");
-                this.printWriter.println("Server: Simple Java HTTP Server");
-                this.printWriter.println("Content-Type: text/html");
-                this.printWriter.println("Content-Length: " + fileLength);
-                this.printWriter.println();
-                this.printWriter.flush();
+                sendHttpResponseHeader("501 Not Implemented", (int) file.length());
+
                 // Send back the HTTP body to the client.
-                this.bufferedOutputStream.write(WebUtil.fileDataToBytes(file, fileLength), 0, fileLength);
-                this.bufferedOutputStream.flush();
+                sendHttpResponseContent(file);
             }
 
             // Requested HTTP method is supported by the web server.
@@ -122,35 +116,21 @@ public class ConnectionHandler extends Thread {
                         int fileLength = (int) file.length();
 
                         // Send back HTTP header fields to the client.
-                        this.printWriter.println("HTTP/1.1 404 Not Found");
-                        this.printWriter.println("Server: Simple Java HTTP Server");
-                        this.printWriter.println("Content-Type: text/html");
-                        this.printWriter.println("Content-Length: " + fileLength);
-                        this.printWriter.println();
-                        this.printWriter.flush();
+                        sendHttpResponseHeader("404 Not Found", (int) file.length());
 
-                        // Prepare body of 404 Error.
-                        this.bufferedOutputStream.write(WebUtil.fileDataToBytes(file, fileLength), 0, fileLength);
-                        this.bufferedOutputStream.flush();
+                        // Send back content of 404 Error.
+                        sendHttpResponseContent(file);
                     } catch (IOException ioe) {
                         System.err.println("ConnectionHandler: file 404.html not found\nError: " + ioe.getMessage());
                     }
                 }
                 else {
-                    int fileLength = (int) file.length();
-
                     // Send back HTTP header fields to the client.
-                    this.printWriter.println("HTTP/1.1 200 OK");
-                    this.printWriter.println("Server: Simple Java HTTP Server");
-                    this.printWriter.println("Content-Type: text/html");
-                    this.printWriter.println("Content-Length: " + fileLength);
-                    this.printWriter.println();
-                    this.printWriter.flush();
+                    sendHttpResponseHeader("200 OK", (int) file.length());
 
-                    // Prepare body of GET request.
+                    // Prepare content of GET request.
                     if (line.startsWith("GET")) {
-                        this.bufferedOutputStream.write(WebUtil.fileDataToBytes(file, fileLength), 0, fileLength);
-                        this.bufferedOutputStream.flush();
+                        sendHttpResponseContent(file);
                     }
                 }
             }
@@ -165,6 +145,33 @@ public class ConnectionHandler extends Thread {
         finally {
             cleanupConnection();
         }
+    }
+
+    /**
+     * Prepares the header of the HTTP response and sends it back to the client.
+     *
+     * @param statusLine The status line of the header.
+     * @param fileLength The length of the response's content being sent back to the client.
+     */
+    private void sendHttpResponseHeader(String statusLine, int fileLength) {
+        this.printWriter.println("HTTP/1.1 " + statusLine);
+        this.printWriter.println("Server: Simple Java HTTP Server");
+        this.printWriter.println("Content-Type: text/html");
+        this.printWriter.println("Content-Length: " + fileLength);
+        this.printWriter.println();
+        this.printWriter.flush();
+    }
+
+    /**
+     * Prepares the content of the HTTP response and sends it back to the client.
+     *
+     * @param file The file whose content is being sent back to the client in the body of the HTTP response.
+     * @throws IOException When the file whose content are to sent cannot be found.
+     */
+    private void sendHttpResponseContent(File file) throws IOException {
+        int fileLength = (int) file.length();
+        this.bufferedOutputStream.write(WebUtil.fileDataToBytes(file, fileLength), 0, fileLength);
+        this.bufferedOutputStream.flush();
     }
 
     /**
