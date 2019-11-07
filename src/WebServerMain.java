@@ -44,7 +44,7 @@ public class WebServerMain {
      * Prints an error message to the command line and terminates the program with an error code.
      */
     public static void serverErrorMessage() {
-        System.out.println("usage: java WebServerMain <document_root> <port>");
+        System.out.println("Usage: java WebServerMain <document_root> <port>");
         System.exit(1); // System exit with an error code.
     }
 
