@@ -113,7 +113,7 @@ public class ConnectionHandler extends Thread {
                         int fileLength = (int) file.length();
 
                         // Send back HTTP header fields to the client.
-                        this.printWriter.println("HTTP/1.1 404 File Not Found");
+                        this.printWriter.println("HTTP/1.1 404 Not Found");
                         this.printWriter.println("Server: Simple Java HTTP Server");
                         this.printWriter.println("Content-Type: text/html");
                         this.printWriter.println("Content-Length:" + fileLength);
