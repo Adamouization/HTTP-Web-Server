@@ -18,14 +18,28 @@ public class WebServerMain {
         // Declare and initialise variables.
         String documentRoot = "";
         int portNumber = 0;
+        int maxNumberOfThreads = 100; // Default value.
 
-        // Parse command line arguments (2 expected).
-        if (args.length == 2) {
+        // Parse command line arguments (2 expected, 3 if specifying max number of threads).
+        if (!(args.length < 2 || args.length > 3)) {
+            // Parse document root.
             documentRoot = args[0];
+            // Parse port number.
             try {
                 portNumber = Integer.parseInt(args[1]);
                 // Invalid port number (must be a positive integer smaller than a )
                 if (portNumber < 0 || portNumber > MAX_PORT_NUMBER) {
+                    serverErrorMessage();
+                }
+            }
+            catch (NumberFormatException e) {
+                serverErrorMessage();
+            }
+            // Parse maximum number of threads.
+            try {
+                maxNumberOfThreads = Integer.parseInt(args[2]);
+                // Invalid port number (must be a positive integer smaller than a )
+                if (maxNumberOfThreads < 0) {
                     serverErrorMessage();
                 }
             }
@@ -39,7 +53,7 @@ public class WebServerMain {
         }
 
         // Create new instance of the HTTP web server.
-        new WebServer(documentRoot, portNumber);
+        new WebServer(documentRoot, portNumber, maxNumberOfThreads);
     }
 
     /**

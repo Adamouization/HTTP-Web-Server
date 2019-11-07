@@ -14,6 +14,7 @@ public class WebServer {
     // Declare variables.
     private String webDirectoryPath;
     private int portNumber;
+    private int maxNumberOfThreads;
     private ServerSocket serverSocket;
 
     /**
@@ -23,9 +24,10 @@ public class WebServer {
      * @param webDirectoryPath The root directory from which the server will serve documents.
      * @param portNumber The port on which the server will listen.
      */
-    public WebServer(String webDirectoryPath, int portNumber) {
+    public WebServer(String webDirectoryPath, int portNumber, int maxNumberOfThreads) {
         this.webDirectoryPath = webDirectoryPath;
         this.portNumber = portNumber;
+        this.maxNumberOfThreads = maxNumberOfThreads;
         try {
             this.serverSocket = startServer();
             serverListening();
@@ -54,7 +56,7 @@ public class WebServer {
      * @throws IOException If the server isn't properly initialised.
      */
     private void serverListening() throws IOException {
-        while (true) {
+        while (Thread.activeCount() < this.maxNumberOfThreads) {
             Socket connection = this.serverSocket.accept();
             System.out.println("\nNew connection from: " + connection.getInetAddress());
             ConnectionHandler connectionHandler = new ConnectionHandler(connection, this.webDirectoryPath);
