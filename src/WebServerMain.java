@@ -7,6 +7,8 @@
  */
 public class WebServerMain {
 
+    private static final int MAX_PORT_NUMBER = 65535; // Max value for a 16-bit integer (2^16 - 1 = 65535).
+
     /**
      * Program entry point.
      *
@@ -22,8 +24,8 @@ public class WebServerMain {
             documentRoot = args[0];
             try {
                 portNumber = Integer.parseInt(args[1]);
-                // Invalid port number (must be a positive integer smaller than a 16-bit integer [2^16-1=65535])
-                if (portNumber < 0 || portNumber > 65535) {
+                // Invalid port number (must be a positive integer smaller than a )
+                if (portNumber < 0 || portNumber > MAX_PORT_NUMBER) {
                     serverErrorMessage();
                 }
             }

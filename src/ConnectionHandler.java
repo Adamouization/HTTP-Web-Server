@@ -34,6 +34,7 @@ public class ConnectionHandler extends Thread {
      * back.
      *
      * @param socket The client connection.
+     * @param webRoot The root directory from which the server will serve documents.
      */
     public ConnectionHandler(Socket socket, String webRoot) {
         this.webRoot = webRoot;
@@ -86,7 +87,7 @@ public class ConnectionHandler extends Thread {
 
             // Point default route towards index.html.
             if (fileRequested.endsWith("/")) {
-                fileRequested += WebUtil.defaultFile;
+                fileRequested += WebUtil.DEFAULT_FILE;
             }
             System.out.println("ConnectionHandler: file " + fileRequested + " requested");
 
@@ -95,7 +96,7 @@ public class ConnectionHandler extends Thread {
 
                 System.out.println("ConnectionHandler: Request method '" + httpMethod + "' not implemented.");
                 // Prepare the custom html file for 501 errors to be sent back.
-                File file = new File(this.webRoot + "/" + WebUtil.fileMethodNotImplemented);
+                File file = new File(this.webRoot + "/" + WebUtil.FILE_METHOD_NOT_IMPLEMENTED);
                 int fileLength = (int) file.length();
 
                 // Send back HTTP header fields to the client.
@@ -117,7 +118,7 @@ public class ConnectionHandler extends Thread {
 
                 if (!file.exists()) {
                     try {
-                        file = new File(this.webRoot + "/" + WebUtil.fileNotFound);
+                        file = new File(this.webRoot + "/" + WebUtil.FILE_NOT_FOUND);
                         int fileLength = (int) file.length();
 
                         // Send back HTTP header fields to the client.

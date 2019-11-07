@@ -12,9 +12,10 @@ import java.io.IOException;
 public class WebUtil {
 
     // Declare and initialise variables.
-    public static final String defaultFile = "index.html";
-    public static final String fileNotFound = "errors/404.html";
-    public static final String fileMethodNotImplemented = "errors/501.html";
+    public static final String crlf = "'\r\n'";
+    public static final String DEFAULT_FILE = "index.html";
+    public static final String FILE_NOT_FOUND = "errors/404.html";
+    public static final String FILE_METHOD_NOT_IMPLEMENTED = "errors/501.html";
 
     /**
      * Converts a file's content to an array of bytes in order to send it over a BufferedOutputStream.
