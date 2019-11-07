@@ -13,8 +13,8 @@ public class WebUtil {
 
     // Declare and initialise variables.
     public static final String defaultFile = "index.html";
-    public static final String fileNotFound = "404.html";
-    public static final String fileMethodNotImplemented = "501.html";
+    public static final String fileNotFound = "errors/404.html";
+    public static final String fileMethodNotImplemented = "errors/501.html";
 
     /**
      * Converts a file's content to an array of bytes in order to send it over a BufferedOutputStream.
