@@ -102,7 +102,7 @@ public class ConnectionHandler extends Thread {
                 this.printWriter.println("HTTP/1.1 501 Not Implemented");
                 this.printWriter.println("Server: Simple Java HTTP Server");
                 this.printWriter.println("Content-Type: text/html");
-                this.printWriter.println("Content-Length:" + fileLength);
+                this.printWriter.println("Content-Length: " + fileLength);
                 this.printWriter.println();
                 this.printWriter.flush();
                 // Send back the HTTP body to the client.
@@ -124,7 +124,7 @@ public class ConnectionHandler extends Thread {
                         this.printWriter.println("HTTP/1.1 404 Not Found");
                         this.printWriter.println("Server: Simple Java HTTP Server");
                         this.printWriter.println("Content-Type: text/html");
-                        this.printWriter.println("Content-Length:" + fileLength);
+                        this.printWriter.println("Content-Length: " + fileLength);
                         this.printWriter.println();
                         this.printWriter.flush();
 
@@ -142,7 +142,7 @@ public class ConnectionHandler extends Thread {
                     this.printWriter.println("HTTP/1.1 200 OK");
                     this.printWriter.println("Server: Simple Java HTTP Server");
                     this.printWriter.println("Content-Type: text/html");
-                    this.printWriter.println("Content-Length:" + fileLength);
+                    this.printWriter.println("Content-Length: " + fileLength);
                     this.printWriter.println();
                     this.printWriter.flush();
 
