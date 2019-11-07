@@ -37,8 +37,9 @@ public class WebUtil {
 
         // Close the FileInputStream.
         finally {
-            if (fileInputStream != null)
+            if (fileInputStream != null) {
                 fileInputStream.close();
+            }
         }
 
         return fileData;
