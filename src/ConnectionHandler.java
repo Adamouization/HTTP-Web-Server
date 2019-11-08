@@ -81,7 +81,7 @@ public class ConnectionHandler extends Thread {
             contentType = getContentType(fileRequested);
 
             // Check if requested HTTP method is not supported by the server (GET and HEAD requests supported only).
-            if (isHttpMethodNotSupportedByServer(fileRequested) && !fileRequested.contains(".ico")) {
+            if (!httpMethod.equals("GET") && !httpMethod.equals("HEAD") && !fileRequested.contains(".ico")) {
                 // Return a 501 Error Not Implemented response (not GET or HEAD).
                 System.out.println("ConnectionHandler: Request method '" + httpMethod + "' not implemented.");
                 new HttpResponse(
@@ -145,16 +145,6 @@ public class ConnectionHandler extends Thread {
         if (line == null || line.isEmpty()) {
             throw new DisconnectionException("Client has closed the connection ...");
         }
-    }
-
-    /**
-     * Checks if the HTTP method requested by the client is supported by the server or not.
-     *
-     * @param httpMethod The HTTP request made by the client.
-     * @return True if it is not supported, False if it is supported.
-     */
-    private boolean isHttpMethodNotSupportedByServer(String httpMethod) {
-        return httpMethod.equals("GET") || httpMethod.equals("HEAD");
     }
 
     /**

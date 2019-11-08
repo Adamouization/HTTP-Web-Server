@@ -23,6 +23,7 @@ public class WebServer {
      *
      * @param webDirectoryPath The root directory from which the server will serve documents.
      * @param portNumber The port on which the server will listen.
+     * @param maxNumberOfThreads The maximum number of active threads.
      */
     public WebServer(String webDirectoryPath, int portNumber, int maxNumberOfThreads) {
         this.webDirectoryPath = webDirectoryPath;
