@@ -65,7 +65,7 @@ public class ConnectionHandler extends Thread {
         StringTokenizer tokenizedLine;
         File file;
 
-        System.out.println("ConnectionHandler: New thread started to handle connection");
+        System.out.println("ConnectionHandler: new thread started to handle incoming connection");
         try {
             // Read incoming line from client.
             String line = this.bufferedReader.readLine();
@@ -77,6 +77,7 @@ public class ConnectionHandler extends Thread {
             System.out.println("Incoming message from client: " + line);
             tokenizedLine = new StringTokenizer(line);
             httpMethod = tokenizedLine.nextToken().toUpperCase(); // Ensure method is all in upper cases.
+            System.out.println("ConnectionHandler: Requested HTTP method '" + httpMethod + "'");
             fileRequested = parseFileRequested(tokenizedLine.nextToken());
             contentType = getContentType(fileRequested);
 
@@ -84,7 +85,7 @@ public class ConnectionHandler extends Thread {
             if (!httpMethod.equals("GET") && !httpMethod.equals("HEAD") && !httpMethod.equals("DELETE")
                     && !fileRequested.contains(".ico")) {
                 // Return a 501 Error Not Implemented response (not GET or HEAD).
-                System.out.println("ConnectionHandler: Request method '" + httpMethod + "' not implemented.");
+                System.out.println("ConnectionHandler: 501 Request method '" + httpMethod + "' not implemented.");
                 new HttpResponse(
                         this.printWriter,
                         this.bufferedOutputStream,
@@ -100,6 +101,7 @@ public class ConnectionHandler extends Thread {
                 file = new File(this.webRoot + fileRequested);
                 // Return a 404 Error Not Found response (requested file does not exist).
                 if (!file.exists()) {
+                    System.out.println("ConnectionHandler: 404 requested file '" + fileRequested + "' not found.");
                     new HttpResponse(
                             this.printWriter,
                             this.bufferedOutputStream,

@@ -88,6 +88,7 @@ public class HttpResponse {
             WebLogger webLogger = new WebLogger("../http_requests_history.log");
             webLogger.logRequest(httpMethod, responseCode, fileRequested);
             webLogger.saveLogFile();
+            System.out.println("HttpResponse: responded with response code '" + responseCode + "'");
         }
         catch (IOException ioe) {
             System.err.println("ConnectionHandler: file '" + fileRequested + "' not found\nError: " + ioe.getMessage());
