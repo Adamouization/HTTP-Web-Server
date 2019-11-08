@@ -7,9 +7,20 @@
  */
 public class WebServerMain {
 
-    private static final int MAX_ARGUMENTS = 3; // Max number of arguments.
-    private static final int DEFAULT_MAX_NUMBER_OF_THREADS = 100; // Default value for max number of active threads.
-    private static final int MAX_PORT_NUMBER = 65535; // Max value for a 16-bit integer (2^16 - 1 = 65535).
+    /**
+     * Max number of arguments.
+     */
+    private static final int MAX_ARGUMENTS = 3;
+
+    /**
+     * Default value for max number of active threads.
+     */
+    private static final int DEFAULT_MAX_NUMBER_OF_THREADS = 100;
+
+    /**
+     * Max value for a 16-bit integer (2^16 - 1 = 65535).
+     */
+    private static final int MAX_PORT_NUMBER = 65535;
 
     /**
      * Program entry point.
