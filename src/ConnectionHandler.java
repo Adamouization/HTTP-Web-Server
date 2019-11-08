@@ -87,7 +87,7 @@ public class ConnectionHandler extends Thread {
                 new HttpResponse(
                         this.printWriter,
                         this.bufferedOutputStream,
-                        501,
+                        WebUtil.CODE_NOT_IMPLEMENTED,
                         httpMethod,
                         WebUtil.FILE_METHOD_NOT_IMPLEMENTED,
                         contentType,
@@ -102,7 +102,7 @@ public class ConnectionHandler extends Thread {
                     new HttpResponse(
                             this.printWriter,
                             this.bufferedOutputStream,
-                            404,
+                            WebUtil.CODE_NOT_FOUND,
                             httpMethod,
                             WebUtil.FILE_NOT_FOUND,
                             contentType,
@@ -114,7 +114,7 @@ public class ConnectionHandler extends Thread {
                     new HttpResponse(
                             this.printWriter,
                             this.bufferedOutputStream,
-                            200,
+                            WebUtil.CODE_OK,
                             httpMethod,
                             fileRequested,
                             contentType,
@@ -175,8 +175,9 @@ public class ConnectionHandler extends Thread {
      * @return The content-type of the requested file.
      */
     private String getContentType(String fileRequested) {
-        if (fileRequested.endsWith(".html"))
+        if (fileRequested.endsWith(".html")) {
             return "text/html";
+        }
         else if (fileRequested.endsWith(".jpg")) {
             return "image/jpg";
         }

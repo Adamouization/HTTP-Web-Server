@@ -40,8 +40,8 @@ class WebLogger {
     public void logRequest(String httpMethod, int responseCode, String fileRequested) {
         LocalDateTime now = LocalDateTime.now();
         this.printWriter.println(this.dateTimeFormatter.format(now));
-        this.printWriter.println("HTTP method: '" + httpMethod + "' requesting file '" + fileRequested +
-                "'. Server responded with code '" + responseCode + "'");
+        this.printWriter.println("HTTP method: '" + httpMethod + "' requesting file '" + fileRequested
+                + "'. Server responded with code '" + responseCode + "'");
         this.printWriter.println();
     }
 

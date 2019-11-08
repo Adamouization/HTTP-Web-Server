@@ -44,7 +44,7 @@ public class HttpResponse {
 
             // Send HTTP response (headers then content) back to client.
             switch (responseCode) {
-                case 200:
+                case WebUtil.CODE_OK:
                     sendHttpResponseHeader(
                             "200 OK",
                             contentType,
@@ -54,7 +54,7 @@ public class HttpResponse {
                         sendHttpResponseContent(file);
                     }
                     break;
-                case 404:
+                case WebUtil.CODE_NOT_FOUND:
                     sendHttpResponseHeader(
                             "404 Not Found",
                             "text/html", // Always html.
@@ -62,7 +62,7 @@ public class HttpResponse {
                     );
                     sendHttpResponseContent(file);
                     break;
-                case 501:
+                default:
                     sendHttpResponseHeader(
                             "501 Not Implemented",
                             "text/html", // Always html.

@@ -7,6 +7,8 @@
  */
 public class WebServerMain {
 
+    private static final int MAX_ARGUMENTS = 3; // Max number of arguments.
+    private static final int DEFAULT_MAX_NUMBER_OF_THREADS = 100; // Default value for max number of active threads.
     private static final int MAX_PORT_NUMBER = 65535; // Max value for a 16-bit integer (2^16 - 1 = 65535).
 
     /**
@@ -18,10 +20,10 @@ public class WebServerMain {
         // Declare and initialise variables.
         String documentRoot = "";
         int portNumber = 0;
-        int maxNumberOfThreads = 100; // Default value.
+        int maxNumberOfThreads = DEFAULT_MAX_NUMBER_OF_THREADS; // Default value.
 
         // Parse command line arguments (2 expected, 3 if specifying max number of threads).
-        if (!(args.length < 2 || args.length > 3)) {
+        if (!(args.length < 2 || args.length > MAX_ARGUMENTS)) {
             // Parse document root.
             documentRoot = args[0];
             // Parse port number.
@@ -36,7 +38,7 @@ public class WebServerMain {
                 serverErrorMessage();
             }
             // Parse maximum number of threads (optional argument).
-            if (args.length == 3) {
+            if (args.length == MAX_ARGUMENTS) {
                 try {
                     maxNumberOfThreads = Integer.parseInt(args[2]);
                     // Invalid port number (must be a positive integer smaller than a )

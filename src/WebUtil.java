@@ -16,6 +16,9 @@ public class WebUtil {
     public static final String DEFAULT_FILE = "index.html"; // Default html page.
     public static final String FILE_NOT_FOUND = "errors/404.html"; // Page for 404 Errors.
     public static final String FILE_METHOD_NOT_IMPLEMENTED = "errors/501.html"; // Page for 501 Errors.
+    public static final int CODE_OK = 200;
+    public static final int CODE_NOT_FOUND = 404;
+    public static final int CODE_NOT_IMPLEMENTED = 501;
 
     /**
      * Converts a file's content to an array of bytes in order to send it over a BufferedOutputStream. Works with any
