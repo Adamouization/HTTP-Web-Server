@@ -81,7 +81,8 @@ public class ConnectionHandler extends Thread {
             contentType = getContentType(fileRequested);
 
             // Check if requested HTTP method is not supported by the server (GET and HEAD requests supported only).
-            if (!httpMethod.equals("GET") && !httpMethod.equals("HEAD") && !fileRequested.contains(".ico")) {
+            if (!httpMethod.equals("GET") && !httpMethod.equals("HEAD") && !httpMethod.equals("DELETE")
+                    && !fileRequested.contains(".ico")) {
                 // Return a 501 Error Not Implemented response (not GET or HEAD).
                 System.out.println("ConnectionHandler: Request method '" + httpMethod + "' not implemented.");
                 new HttpResponse(

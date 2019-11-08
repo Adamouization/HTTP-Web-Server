@@ -42,6 +42,11 @@ public class HttpResponse {
             File file = new File(webRoot + "/" + fileRequested);
             int fileLength = (int) file.length();
 
+            // Try to carry out the DELETE request.
+            if (httpMethod.equals("DELETE")) {
+                responseCode = deleteAndGetResponseCode(file, fileRequested);
+            }
+
             // Send HTTP response (headers then content) back to client.
             switch (responseCode) {
                 case WebUtil.CODE_OK:
@@ -53,6 +58,13 @@ public class HttpResponse {
                     if (httpMethod.equals("GET")) { // Only send if GET request, not HEAD.
                         sendHttpResponseContent(file);
                     }
+                    break;
+                case WebUtil.CODE_NO_CONTENT:
+                    sendHttpResponseHeader(
+                            "204 No Content",
+                            "text/html", // Always html.
+                            fileLength
+                    );
                     break;
                 case WebUtil.CODE_NOT_FOUND:
                     sendHttpResponseHeader(
@@ -107,6 +119,26 @@ public class HttpResponse {
         int fileLength = (int) file.length();
         this.bufferedOutputStream.write(WebUtil.fileDataToBytes(file, fileLength), 0, fileLength);
         this.bufferedOutputStream.flush();
+    }
+
+    /**
+     * Tries to delete the requested file. Returns a 204 No Content response if the file is successfully deleted (there
+     * is no content returned to the client) or a 404 Not Found response if the file cannot be deleted (because it isn't
+     * there).
+     *
+     * @param file The file to delete.
+     * @param fileRequested the name of the file to delete.
+     * @return The appropriate response code based on the outcome of the delete operation.
+     */
+    private int deleteAndGetResponseCode(File file, String fileRequested) {
+        if (file.delete()) {
+            System.out.println("Deleted request file '" + fileRequested + "'");
+            return WebUtil.CODE_NO_CONTENT;
+        }
+        else {
+            System.out.println("Failed to delete the requested file '" + fileRequested + "'");
+            return WebUtil.CODE_NOT_FOUND;
+        }
     }
 
 }

@@ -19,6 +19,8 @@ public class WebUtil {
     public static final String FILE_METHOD_NOT_IMPLEMENTED = "errors/501.html";
     // Code for OK responses.
     public static final int CODE_OK = 200;
+    // Code for No Content responses.
+    public static final int CODE_NO_CONTENT = 204;
     // Code for Not Found responses.
     public static final int CODE_NOT_FOUND = 404;
     // Code for Not Implemented responses.
