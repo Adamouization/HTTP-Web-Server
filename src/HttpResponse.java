@@ -32,9 +32,10 @@ public class HttpResponse {
      * @param fileRequested The file requested in the HTTP request made by the client.
      * @param contentType The type of the content being sent back to the client.
      * @param webRoot The root directory from which the server will serve documents.
+     * @param clientIpAddress The String representing the IP address of the connected client.
      */
     public HttpResponse(PrintWriter pw, BufferedOutputStream bos, int responseCode, String httpMethod,
-                        String fileRequested, String contentType, String webRoot) {
+                        String fileRequested, String contentType, String webRoot, String clientIpAddress) {
         this.printWriter = pw;
         this.bufferedOutputStream = bos;
         try {
@@ -86,7 +87,7 @@ public class HttpResponse {
 
             // Log the information of the client's HTTP request.
             WebLogger webLogger = new WebLogger("../http_requests_history.log");
-            webLogger.logRequest(httpMethod, responseCode, fileRequested);
+            webLogger.logRequest(httpMethod, responseCode, fileRequested, clientIpAddress);
             webLogger.saveLogFile();
             System.out.println("HttpResponse: responded with response code '" + responseCode + "'");
         }

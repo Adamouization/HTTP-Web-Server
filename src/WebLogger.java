@@ -36,10 +36,12 @@ class WebLogger {
      * @param httpMethod The HTTP request made by the client.
      * @param responseCode The HTTP response code used to build an appropriate response header.
      * @param fileRequested The file requested in the HTTP request made by the client.
+     * @param clientIpAddress The String representing the IP address of the connected client.
      */
-    public void logRequest(String httpMethod, int responseCode, String fileRequested) {
+    public void logRequest(String httpMethod, int responseCode, String fileRequested, String clientIpAddress) {
         LocalDateTime now = LocalDateTime.now();
         this.printWriter.println(this.dateTimeFormatter.format(now));
+        this.printWriter.println("Client IP address: " + clientIpAddress);
         this.printWriter.println("HTTP method: '" + httpMethod + "' requesting file '" + fileRequested
                 + "'. Server responded with code '" + responseCode + "'");
         this.printWriter.println();

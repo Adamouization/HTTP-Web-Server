@@ -59,8 +59,10 @@ public class WebServer {
     private void serverListening() throws IOException {
         while (Thread.activeCount() < this.maxNumberOfThreads) {
             Socket connection = this.serverSocket.accept();
-            System.out.println("\nNew connection from: " + connection.getInetAddress());
-            ConnectionHandler connectionHandler = new ConnectionHandler(connection, this.webDirectoryPath);
+            String clientIpAddress = connection.getInetAddress().toString();
+            System.out.println("\nNew connection from: " + clientIpAddress);
+            ConnectionHandler connectionHandler = new ConnectionHandler(connection, this.webDirectoryPath,
+                    clientIpAddress);
             connectionHandler.start(); // Start threaded connection handler.
         }
     }

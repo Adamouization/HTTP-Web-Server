@@ -23,6 +23,7 @@ public class ConnectionHandler extends Thread {
 
     // Declare variables.
     private String webRoot;
+    private String clientIpAddress;
     private Socket socket;
     private BufferedReader bufferedReader;
     private PrintWriter printWriter;
@@ -34,9 +35,11 @@ public class ConnectionHandler extends Thread {
      *
      * @param socket The client connection.
      * @param webRoot The root directory from which the server will serve documents.
+     * @param clientIpAddress The String representing the IP address of the connected client.
      */
-    public ConnectionHandler(Socket socket, String webRoot) {
+    public ConnectionHandler(Socket socket, String webRoot, String clientIpAddress) {
         this.webRoot = webRoot;
+        this.clientIpAddress = clientIpAddress;
         this.socket = socket;
         try {
             InputStream inputStream = this.socket.getInputStream();
@@ -93,7 +96,8 @@ public class ConnectionHandler extends Thread {
                         httpMethod,
                         WebUtil.FILE_METHOD_NOT_IMPLEMENTED,
                         contentType,
-                        this.webRoot
+                        this.webRoot,
+                        this.clientIpAddress
                 );
             }
             // Requested HTTP method is supported by the web server.
@@ -109,7 +113,8 @@ public class ConnectionHandler extends Thread {
                             httpMethod,
                             WebUtil.FILE_NOT_FOUND,
                             contentType,
-                            this.webRoot
+                            this.webRoot,
+                            this.clientIpAddress
                     );
                 }
                 // Return a 200 OK response (with the requested file).
@@ -121,7 +126,8 @@ public class ConnectionHandler extends Thread {
                             httpMethod,
                             fileRequested,
                             contentType,
-                            this.webRoot
+                            this.webRoot,
+                            this.clientIpAddress
                     );
                 }
             }
