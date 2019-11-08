@@ -136,7 +136,7 @@ public class HttpResponse {
      * @return The appropriate response code based on the outcome of the delete operation.
      */
     private int deleteAndGetResponseCode(File file, String fileRequested) {
-        if (!fileRequested.equals("404.html")) {
+        if (!fileRequested.equals("errors/404.html")) {
             if (file.delete()) { // Don't delete 404.html by accident.
                 System.out.println("Deleted request file '" + fileRequested + "'");
                 return WebUtil.CODE_NO_CONTENT;
