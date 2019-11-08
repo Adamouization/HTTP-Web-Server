@@ -27,6 +27,11 @@ public class WebUtil {
     public static final String FILE_METHOD_NOT_IMPLEMENTED = "errors/501.html";
 
     /**
+     * Carriage Return Line Feed.
+     */
+    public static final String CR_LF = "\r\n";
+
+    /**
      * Code for OK responses.
      */
     public static final int CODE_OK = 200;

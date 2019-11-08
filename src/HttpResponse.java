@@ -102,10 +102,14 @@ public class HttpResponse {
      * @param fileLength The length of the response's content being sent back to the client.
      */
     private void sendHttpResponseHeader(String statusLine, String contentType, int fileLength) {
-        this.printWriter.println("HTTP/1.1 " + statusLine);
-        this.printWriter.println("Server: Simple Java HTTP Server");
-        this.printWriter.println("Content-Type: " + contentType);
-        this.printWriter.println("Content-Length: " + fileLength);
+        this.printWriter.print("HTTP/1.1 " + statusLine);
+        this.printWriter.print(WebUtil.CR_LF);
+        this.printWriter.print("Server: Simple Java HTTP Server");
+        this.printWriter.print(WebUtil.CR_LF);
+        this.printWriter.print("Content-Type: " + contentType);
+        this.printWriter.print(WebUtil.CR_LF);
+        this.printWriter.print("Content-Length: " + fileLength);
+        this.printWriter.print(WebUtil.CR_LF);
         this.printWriter.println();
         this.printWriter.flush();
     }
