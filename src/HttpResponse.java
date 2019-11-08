@@ -85,7 +85,7 @@ public class HttpResponse {
             }
 
             // Log the information of the client's HTTP request.
-            WebLogger webLogger = new WebLogger("http_requests_history.log");
+            WebLogger webLogger = new WebLogger("../http_requests_history.log");
             webLogger.logRequest(httpMethod, responseCode, fileRequested);
             webLogger.saveLogFile();
         }
