@@ -1,6 +1,8 @@
-# Java-Web-Server-HTTP-Requests
+# Java-Web-Server-HTTP-Requests [![HitCount](http://hits.dwyl.io/Adamouization/HTTP-Web-Server.svg)](http://hits.dwyl.io/Adamouization/HTTP-Web-Server) [![GitHub license](https://img.shields.io/github/license/Adamouization/HTTP-Web-Server)](https://github.com/Adamouization/HTTP-Web-Server/blob/master/LICENSE)
 
-This is an HTTP server implemented in Java using the native [`java.net`](https://docs.oracle.com/javase/7/docs/api/java/net/package-summary.html) and [`java.io`](https://docs.oracle.com/javase/7/docs/api/java/io/package-summary.html) libraries. It supports HTTP GET, HEAD and DELETE requests from multiple clients through threading, and responses appropriately to connecting clients using the 200 OK, 204 No Content, 404 Not Found and 501 Not Implemented codes. It also supports text files such as `text/html` and binary images such as `images/jpg`, `images/jpeg`, `images/png` and `images/gif`. The server logs every request to a `.log` file.
+This is an HTTP server implemented in Java using the native [`java.net`](https://docs.oracle.com/javase/7/docs/api/java/net/package-summary.html) and [`java.io`](https://docs.oracle.com/javase/7/docs/api/java/io/package-summary.html) libraries. It supports HTTP GET, HEAD and DELETE requests from multiple clients through threading, and responses appropriately to connecting clients using the 200 OK, 204 No Content, 404 Not Found and 501 Not Implemented codes. It also supports text files such as `text/html` and binary images such as `images/jpg`, `images/jpeg`, `images/png` and `images/gif`. The server logs every request to a `.log` file. This project was completed for the CS5001 module as a part of my MSc in Artificial Intelligence at the University of St Andrews.
+
+A short report of the advanded requirements can be read [here](https://github.com/Adamouization/HTTP-Web-Server/blob/master/report_advanced_requirements.pdf).
 
 ## Installation
 
